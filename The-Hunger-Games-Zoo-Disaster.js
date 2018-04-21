@@ -76,5 +76,3 @@ var whoEatsWho = function(zoo) {
 
   return result;
 }
-
-console.log(whoEatsWho("bear,grass,grass,grass,grass,sheep,bug,chicken,little-fish,little-fish,little-fish,little-fish,big-fish,big-fish,big-fish"));

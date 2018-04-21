@@ -1,3 +1,4 @@
+//可以吃吗
 var canEatWho = function (eatListOrObj, who) {
   if(Object.prototype.toString.call(eatListOrObj) === '[object Array]') {
     for(let i = 0, len = eatListOrObj.length; i < len; i++) {
@@ -9,12 +10,9 @@ var canEatWho = function (eatListOrObj, who) {
   return eatListOrObj === who;
 }
 
+//获取关系
 var getEatRelationStr = function (a, b) {
   return a + " eats " + b;
-}
-
-var removeEated = function (zoos, eated) {
-  return zoos.splice(zoos.indexOf(eated), 1);
 }
 
 var whoEatsWho = function(zoo) {
@@ -36,36 +34,47 @@ var whoEatsWho = function(zoo) {
     "sheep": "grass",
   };
 
-  let zoos = zoo.split(","), currentZoo, leftZoo, rightZoo;
+  let zoos = zoo.split(","), currentZoo, leftZoo, rightZoo, leftZooIndex, rightZooIndex, moveLeft;
 
   for(let i = 0, len = zoos.length; i < len; i++) {
     currentZoo = zoos[i];
     if(!currentZoo) {
       continue;
     }
-    leftZoo = zoos[i-1];
-    rightZoo = zoos[i+1];
-
-    if(leftZoo && canEatWho(eatMap[currentZoo], leftZoo)) {
+    leftZooIndex = i - 1;
+    leftZoo = zoos[leftZooIndex];
+    while(leftZoo && canEatWho(eatMap[currentZoo], leftZoo)) {
       result.push(getEatRelationStr(currentZoo, leftZoo));
-      removeEated(zoos, leftZoo);
-      i=i-3;
+      zoos.splice(leftZooIndex, 1)
       len=zoos.length;
+      leftZooIndex = i - 2;
+      leftZoo = zoos[leftZooIndex];
+      i = i - 1;
+      moveLeft = true;
     }
+
+    //往上一个
+    if(moveLeft) {
+      i = i - 1;
+      currentZoo = zoos[i];
+      moveLeft = false;
+    }
+    rightZooIndex = i + 1;
+    rightZoo = zoos[rightZooIndex];
+
 
     while(rightZoo && canEatWho(eatMap[currentZoo], rightZoo)) {
       result.push(getEatRelationStr(currentZoo, rightZoo));
-      removeEated(zoos, rightZoo);
+      zoos.splice(rightZooIndex, 1)
       len=zoos.length;
-      rightZoo = zoos[i+1];
-    }
 
+      rightZooIndex = i + 1;
+      rightZoo = zoos[rightZooIndex];
+    }
   }
   result.push(zoos.join(","));
 
   return result;
 }
 
-console.log(whoEatsWho("leaves,bicycle,little-fish,bear,big-fish,leaves"));
-
-// leaves,bicycle,little-fish,bear,leaves
+console.log(whoEatsWho("bear,grass,grass,grass,grass,sheep,bug,chicken,little-fish,little-fish,little-fish,little-fish,big-fish,big-fish,big-fish"));
